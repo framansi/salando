@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\InfoRequest;
+
 use App\Mail\InfoMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -14,9 +14,7 @@ class PageController extends Controller
 
     public function index()
     {
-
         $response = Http::get($this->url)->object();
-
         $data = [$response[0], $response[1], $response[2]];
         return view('index', ['data' => $data]);
     }
@@ -31,20 +29,20 @@ class PageController extends Controller
         $item = Http::get($this->url . $id)->object();
         return view('show', ['item' => $item]);
     }
-    public function store(InfoRequest $request)
+    public function store(Request $request)
     {
 
         $data = [
             "product_id" => $request->product_id,
-            // "product_name" => $request->product_name,
-            // "product_price" => $request->product_price,
+            "product_name" => $request->product_name,
+            "product_price" => $request->product_price,
             "surname" => $request->surname,
             "name" => $request->name,
             "email" => $request->email,
         ];
 
-        Mail::to($request->email)->send(new AdminMail($data));
-        Mail::to($request->email)->send(new UserMail($data));
+        Mail::to($request->email)->send(new InfoMail($data));
+
         return redirect()->route('thank');
     }
 
